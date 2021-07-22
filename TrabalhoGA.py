@@ -3,6 +3,9 @@ import math
 import random
 
 
+
+
+#Metodo para adicionar os valores de calculados na modal na lista de fitness
 def fitness(pop, tam):
     fitness = []
     for i in range(tam):
@@ -10,7 +13,7 @@ def fitness(pop, tam):
         fitness.append(round(aux, 4))
     return fitness
 
-
+#Metodo para calcular as modais, com os individuos gerados aleatoriamente
 def modal_function(individual):
     x1 = individual[0]
     x2 = individual[1]
@@ -22,28 +25,23 @@ def modal_function(individual):
     while i < 6:
         aux1 = aux1 + (i*math.cos((i+1)*x1 + i))
         aux2 = aux2 + (i*math.cos((i+1)*x2 + i))
-
-        #print("Iteracao ", i)
-        #print("Primeira parte: ", "X1 = ", x1, "X2 = ", x2, "resultado: ", aux1)
-        #print("Segunda parte: ", "X1 = ", x1, "X2 = ", x2, "resultado: ", aux2)
         i = i+1
 
     f_modal = aux1*aux2
-    #print("Aux1: ", aux1, "Aux2: ", aux2)
-    #print("Modal final: ",f_modal)
+    
 
     return f_modal
 
-
+#Metodo para criacao dos individuos
 def individual():
     individual = []
     for i in range(2):
-        aux = random.uniform(-10, 10)
+        aux = random.uniform(-10, 10) #Cria um numero aleatorio de -10 a 10 e adiciona ele com 4 casas decimais aos individuos (x1 e x2)
         individual.append(round(aux, 4))
 
     return individual
 
-
+#Metodo para criacao da populacao, depende do tamanho selecionado na main
 def population(tam):
     population = []
 
@@ -64,17 +62,13 @@ def selection(fitness, pop, tam):
 
     # Torneio dos individuos, onde o menor é o selecionado para o caso trabalhado
         if fitness[aux1] > fitness[aux2]:
-            #print("Random: ", aux1, " ", aux2, "Entrou em: ", fitness[aux1], ">", fitness[aux2])
             selection.append(pop[aux2])
         elif fitness[aux1] < fitness[aux2]:
-            #print("Random: ", aux1, " ", aux2,"Entrou em: ", fitness[aux1], "<", fitness[aux2])
             selection.append(pop[aux1])
-
         elif fitness[aux1] == fitness[aux2]:
-            #print("Random: ", aux1, " ", aux2,"Entrou em: ", fitness[aux1], "=", fitness[aux2])
             selection.append(pop[aux1])
 
-    return crossover(selection, tam)
+    return selection
 
 # Método para calcular o crossover através do método blx-alpha
 
@@ -140,7 +134,7 @@ def crossover(pop, tam):
     return crossover_result
 
 
-def mutation(aux_pop):
+def mutation(aux_pop, elit):
     mutation_result = []  # Lista com os individuos resultantes da mutacao
     mutation_rate = 0.30  # Taxa de mutacao de 30%
 
@@ -151,7 +145,7 @@ def mutation(aux_pop):
         # Gerando um numero aleatorio de 0 a 1.5 e o comparando com a taxa de mutacao
         random_number = random.uniform(0.0, 1.0)
         if random_number > mutation_rate:  # Caso o numero aleatorio seja maior que a taxa de mutacao, o individuo não é selecionado
-            #print("entrou em 1")
+            
             mutation_temp = aux_pop[i]
 
         elif random_number <= mutation_rate:  # Caso o numero aleatorio seja menor ou igual a taxa de mutacao, o individuo é selecionado para tal
@@ -175,42 +169,30 @@ def mutation(aux_pop):
             # Inserindo os individuos mutados na lista temporaria
             mutation_temp.append(round(mutation_x1, 4))
             mutation_temp.append(round(mutation_x2, 4))
-            #print("Entrou em 2")
+            
 
         # Apendando todos os individuos na lista resultado da mutacao
         mutation_result.append(mutation_temp)
 
+    mutation_result.append(elit)
     return mutation_result
 
 
 def elitism(fitness, pop, tam):  # metodo que escolhe o melhor fitness da geracao
-    rand = random.randint(0, 10)  # Valor randomico de 0 a 10
+    rand = random.randint(1, 10)  # Valor randomico de 0 a 10
     # Inicia a variavel de melhor resultado com algum valor alatorio da fitness
-    top_result = fitness[rand]
+    top_result = fitness[0]
     flag = 0  # Variavel para marcar o indice que obteve sucesso
 
     for i in range(tam):  # For rodando pela lista de fitness
-        # Caso a fitness seja menor que o melhor resultado
+        # Caso a fitness seja menor ou igual que o melhor resultado
         if top_result >= fitness[i]:
             # A fitness é atribuida ao melhor resultado, pois estamos procurando o mínimo
             top_result = fitness[i]
             flag = i  # O indice da melhor fitness é marcado
 
-    print("Melhor fitness: ", top_result)
+    
+    
     # São retornados os pontos x1 e x2 referentes a melhor fitness da geracao
     return pop[flag]
 
-
-tam = 10
-
-pop = population(tam)
-fit = fitness(pop, tam)
-selec = selection(fit, pop, tam)
-mut = mutation(selec)
-elit = elitism(fit, pop, tam)
-
-print("Populacao inicial: ", pop)
-print("Fitness inicial: ", fit)
-print("Crossover: ", selec)
-print("Mutacao: ", mut)
-print("Melhores pontos: ", elit)
