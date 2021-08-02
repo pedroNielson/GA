@@ -17,4 +17,6 @@ The algorithm uses some diferent metods to build the GA
 ## - Results
 Selected two cases to show off some results
 - When the population is equal to 100
+<img src="https://github.com/pedroNielson/GA/Images/bestcase-100.png">
 - When the population is equal to 150
+<img src="https://github.com/pedroNielson/GA/Images/bestcase-150.png">
